@@ -1,0 +1,431 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Metadata -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Supplier Panel</title>
+
+    <!-- External Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        /* General Styles */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            height: 100vh;
+            width: 300px;
+            background-color: #343a40;
+            padding: 5px;
+            position: fixed;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar ul li {
+            margin: 3px 0;
+        }
+
+        .sidebar ul li a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar ul li a:hover {
+            background-color: #495057;
+            color: #6f7780;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content Styles */
+        main {
+            margin-left: 300px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        header h2 {
+            font-size: 2rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .card a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            color: #414e5c;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            width: 100%;
+        }
+
+        .dropdown-menu {
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #63696e;
+            color: #3c3e41;
+        }
+
+        .dropdown-menu a {
+            color: #faf4f42c;
+            padding: 10px 15px;
+            display: block;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Chart Styles */
+        #reportsChart {
+            margin-top: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+
+            main {
+                margin-left: 260px;
+            }
+
+            header h2 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            main {
+                margin-left: 230px;
+            }
+
+            .card a {
+                padding: 15px;
+            }
+
+            .card-title {
+                font-size: 1.1rem;
+            }
+
+            .card-text {
+                font-size: 0.9rem;
+            }
+
+            header h2 {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            main {
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            header h2 {
+                font-size: 1.4rem;
+            }
+
+            .card a {
+                padding: 10px;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            .card-text {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Section -->
+            <nav class="sidebar">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <h3 class="text-white dropdown-toggle">{{ name|upper }}</h3>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    <hr>
+                    <li><a href="{% url 'seller_dashboard' %}"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="{% url 'view_orders' %}"><i class="fas fa-shopping-cart"></i> Orders</a></li>
+                    <li><a href="#"><i class="fas fa-undo-alt"></i> Returns</a></li>
+                    <li><a href="#"><i class="fas fa-money-bill-alt"></i> Pricing</a></li>
+                    <li><a href="#"><i class="fas fa-file-invoice"></i> Claims</a></li>
+                    <li><a href="{% url 'product_list' %}"><i class="fas fa-boxes"></i> Inventory</a></li>
+                    <li><a href="{% url 'add_product' %}"><i class="fas fa-upload"></i> Add Product</a></li>
+                    <li><a href="#"><i class="fas fa-images"></i> Image Bulk Upload</a></li>
+                    <li><a href="#"><i class="fas fa-credit-card"></i> Payments</a></li>
+                    <li><a href="#"><i class="fas fa-warehouse"></i> Warehouse</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> Influencer Marketing</a></li>
+                    <li><a href="#"><i class="fas fa-bullhorn"></i> Advertisement</a></li>
+                    <li><a href="#"><i class="fas fa-percent"></i> Promotions</a></li>
+                    <li><a href="#"><i class="fas fa-coins"></i> Instant Cash</a></li>
+                    <li><a href="#"><i class="fas fa-balance-scale"></i> Quality</a></li>
+                </ul>
+            </nav>
+
+            <!-- Main Content Section -->
+            <main class="col-md-9 col-lg-10">
+                <header class="mb-4">
+                    <h2>Welcome Back, {{ name|upper }}!</h2>
+                </header>
+
+                <!-- Dashboard Cards -->
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="card">
+                            <a href="#" class="card-body text-center">
+                                <h5 class="card-title">Pending Orders</h5>
+                                <p class="card-text"><strong>{{ status_counts.pending }}</strong></p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <a href="#" class="card-body text-center">
+                                <h5 class="card-title">Download Label</h5>
+                                <p class="card-text"><strong>{{ status_counts.ready_to_ship }}</strong></p>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card">
+                            <a href="#" class="card-body text-center">
+                                <h5 class="card-title">Out Of Stock</h5>
+                                <p class="card-text"><strong>{{ status_counts.shipped }}</strong></p>
+                            </a>
+                        </div>
+                    </div>
+                    {% if low_stock_count > 0 %}
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Low Stock</h5>
+                                        <p class="card-text"><strong>{{ low_stock_count }}</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                </div>
+
+                <!-- Reports Section -->
+                <section class="row mt-4">
+                    <script type="application/json" id="dates-data">{{ dates|safe }}</script>
+                    <script type="application/json" id="order-counts-data">{{ order_counts|safe }}</script>
+                    <div class="col-lg-6">
+                        <div class="card">
+                          <div class="card-body">
+                            <div style="width: 70%; margin: auto;">
+                                <h2>Order Insights</h2>
+                                <canvas id="orderChart"></canvas>
+                            </div>
+
+                            <!-- End Area Chart -->
+                          </div>
+                        </div>
+                      </div>
+                    <!-- Secondary Cards -->
+                    <div class="col-md-6">
+                        <div class="row g-3">
+                            {% for status, count in status_counts.items %}
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <a href="#" class="card-body text-center">
+                                        <h5 class="card-title">{{ status|title }}</h5>
+                                        <p class="card-text"><strong>{{ count }}</strong></p>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <a href="#" class="card-body text-center">
+                                        <h5 class="card-title">Views</h5>
+                                        <p class="card-text"><strong>0</strong></p>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <a href="#" class="card-body text-center">
+                                        <h5 class="card-title">Orders</h5>
+                                        <p class="card-text"><strong>0</strong></p>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- In Stock Listings -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">In Stock Listings</h5>
+                                        <p class="card-text"><strong>{{ product_count }}</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Low Stock Alert -->
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Outstanding Payments</h5>
+                                        <p class="card-text"><strong>0</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/order-chart/")
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched Data:", data);
+    
+                    if (!data.labels.length) {
+                        console.error("No data available for chart");
+                        return;
+                    }
+    
+                    const ctx = document.getElementById("orderChart").getContext("2d");
+    
+                    new Chart(ctx, {
+                        type: "line",
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: "Orders Per Day",
+                                data: data.values,
+                                borderColor: "#00ADF2",
+                                // borderColor: "skyblue",
+                                backgroundColor: "rgba(0, 123, 255, 0.2)",
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: true }
+                            },
+                            scales: {
+                                x: {
+                                    title: { display: true, text: "Date" },
+                                    ticks: { maxRotation: 45, minRotation: 45 } // Prevent overlap
+                                },
+                                y: {
+                                    title: { display: true, text: "Order Count" },
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("Error fetching data:", error));
+        });
+    </script>
+
+</body>
+
+</html>

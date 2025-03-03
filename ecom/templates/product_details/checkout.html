@@ -1,0 +1,269 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Furni - Checkout</title>
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+	<style>
+		.user-initial {
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+			background-color: #f8f9fa;
+			color: #343a40;
+			border-radius: 50%;
+			text-align: center;
+			line-height: 32px;
+			font-weight: bold;
+			font-size: 14px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Start Header/Navigation -->
+	<header>
+		<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
+			<div class="container">
+				<a class="navbar-brand" href="{% url 'home_view' %}">Furni<span>.</span></a>
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+					aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarsFurni">
+					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'home_view' %}">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'shop_view' %}">Shop</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'my_orders' %}">My Order</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'about_view' %}">About Us</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+						</li>
+					</ul>
+
+					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+						{% if request.session.user_name %}
+						<li class="nav-item dropdown">
+							<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<span class="user-initial">
+									{{ request.session.user_name|slice:":1"|upper }}
+								</span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="#">Settings</a></li>
+								<li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+							</ul>
+						</li>
+						{% else %}
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'login' %}" title="Login">
+								<img src="{% static 'images/user.svg' %}">
+							</a>
+						</li>
+						{% endif %}
+
+						<li class="nav-item icon">
+							<a class="nav-link" href="{% url 'cart_view' %}" title="Cart">
+								<img src="{% static 'images/cart.svg' %}" alt="Cart" class="icon">
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<!-- End Header/Navigation -->
+
+	<!-- Start Hero Section -->
+	<section class="hero-section">
+		<div class="container">
+			<div class="row justify-content-between">
+				<div class="col-lg-5">
+					<div class="intro-excerpt">
+						<h1>Checkout</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Hero Section -->
+
+	<!-- Start Billing Section -->
+	<section class="untree_co">
+		<div class="container my-4">
+			<form method="POST" action="{% url 'checkout' %}">
+				{% csrf_token %}
+				<div class="row">
+					<div class="col-md-4">
+						<h4>Billing Address</h4>
+						<div class="form-group">
+							<label for="billing_fullname">Full Name</label>
+							<input type="text" class="form-control" id="billing_fullname" name="billing_fullname" value="{{ billing_address.billing_fullname }}" placeholder="Enter your full name">
+						</div>
+						<div class="form-group">
+							<label for="billing_address">Street Address</label>
+							<input type="text" class="form-control" id="billing_address" name="billing_address" value="{{ billing_address.billing_address }}" placeholder="Enter your street address">
+						</div>
+						<div class="form-group">
+							<label for="billing_city">City</label>
+							<input type="text" class="form-control" id="billing_city" name="billing_city" value="{{ billing_address.billing_city }}" placeholder="Enter your city">
+						</div>
+						<div class="form-group">
+							<label for="billing_state">State</label>
+							<input type="text" class="form-control" id="billing_state" name="billing_state" value="{% if billing_address.billing_state %}{{ billing_address.billing_state }}{% else %}{{ '' }}{% endif %}" placeholder="Enter your state">
+						</div>
+						<div class="form-group">
+							<label for="billing_pincode">Pin Code</label>
+							<input type="text" class="form-control" id="billing_pincode" name="billing_pincode" value="{{ billing_address.billing_pincode }}" placeholder="Enter your pin code">
+						</div>
+						<div class="form-group">
+							<label for="billing_country">Country</label>
+							<input type="text" class="form-control" id="billing_country" name="billing_country" value="{{ billing_address.billing_country }}" placeholder="Enter your country">
+						</div>
+						<div class="form-group">
+							<label for="billing_contact_number">Contact Number</label>
+							<input type="text" class="form-control" id="billing_contact_number" name="billing_contact_number" value="{{ billing_address.billing_contact_number }}" placeholder="Enter your contact number">
+						</div>
+					</div>
+	
+					<!-- Shipping Address Section -->
+					<div class="col-md-4">
+						<h4>Shipping Address</h4>
+						<div class="form-group">
+							<label for="shipping_fullname">Full Name</label>
+							<input type="text" class="form-control" id="shipping_fullname" name="shipping_fullname" value="{{ billing_address.shipping_fullname }}" placeholder="Enter full name">
+						</div>
+						<div class="form-group">
+							<label for="shipping_address">Street Address</label>
+							<input type="text" class="form-control" id="shipping_address" name="shipping_address" value="{{ billing_address.shipping_address }}" placeholder="Enter street address">
+						</div>
+						<div class="form-group">
+							<label for="shipping_city">City</label>
+							<input type="text" class="form-control" id="shipping_city" name="shipping_city" value="{{ billing_address.shipping_city }}" placeholder="Enter city">
+						</div>
+						<div class="form-group">
+							<label for="shipping_state">State</label>
+							<input type="text" class="form-control" id="shipping_state" name="shipping_state" value="{% if billing_address.shipping_state %}{{ billing_address.shipping_state }}{% else %}{{ '' }}{% endif %}" placeholder="Enter state">
+						</div>
+						<div class="form-group">
+							<label for="shipping_pincode">Pin Code</label>
+							<input type="text" class="form-control" id="shipping_pincode" name="shipping_pincode" value="{{ billing_address.shipping_pincode }}" placeholder="Enter pin code">
+						</div>
+						<div class="form-group">
+							<label for="shipping_country">Country</label>
+							<input type="text" class="form-control" id="shipping_country" name="shipping_country" value="{{ billing_address.shipping_country }}" placeholder="Enter country">
+						</div>
+						<div class="form-group">
+							<label for="shipping_contact_number">Contact Number</label>
+							<input type="text" class="form-control" id="shipping_contact_number" name="shipping_contact_number" value="{{ billing_address.shipping_contact_number }}" placeholder="Enter contact number">
+						</div>
+					</div>
+	
+					<!-- Order Summary Section -->
+					<div class="col-md-4">
+						<h4>Order Summary</h4>
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Product</th>
+									<th>Price</th>
+									<th>Quantity</th>
+									<th>Total</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for item in cart.cart_items.all %}
+								<tr>
+									<td>{{ item.product.product_name }}</td>
+									<td>₹{{ item.product.price }}</td>
+									<td>{{ item.quantity }}</td>
+									<td>₹{{ item.total_price }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+						<p><strong>Total Price:</strong> ₹{{ total_price }}</p>
+						<button type="submit" class="btn btn-black">Place Order</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</section>
+	<!-- End Billing Section -->
+
+	<!-- Start Footer Section -->
+	<footer class="footer-section">
+		<div class="container relative">
+			<div class="sofa-img">
+				<img src="{% static 'images/sofa.png' %}" alt="Sofa" class="img-fluid">
+			</div>
+
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="subscription-form">
+						<h3 class="d-flex align-items-center"><span class="me-1"><img
+									src="{% static 'images/envelope-outline.svg' %}" alt="Image"
+									class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
+
+						<form action="#" class="row g-3">
+							<div class="col-auto">
+								<input type="text" class="form-control" placeholder="Enter your name">
+							</div>
+							<div class="col-auto">
+								<input type="email" class="form-control" placeholder="Enter your email">
+							</div>
+							<div class="col-auto">
+								<button class="btn btn-primary">
+									<span class="fa fa-paper-plane"></span>
+								</button>
+							</div>
+						</form>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="border-top copyright">
+				<div class="row pt-4">
+					<div class="col-lg-6">
+						<p class="mb-2 text-center text-lg-start">Copyright &copy;
+							<script>document.write(new Date().getFullYear());</script>. All Rights Reserved. &mdash;
+							Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a
+								href="https://themewagon.com">ThemeWagon</a>
+						</p>
+					</div>
+
+					<div class="col-lg-6 text-center text-lg-end">
+						<ul class="list-unstyled d-inline-flex ms-auto">
+							<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- End Footer Section -->
+
+	<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+	<script src="{% static 'js/tiny-slider.js' %}"></script>
+	<script src="{% static 'js/custom.js' %}"></script>
+</body>
+
+</html>

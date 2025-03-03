@@ -1,0 +1,359 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author" content="Untree.co">
+	<link rel="shortcut icon" href="{% static 'images/favicon.png' %}">
+	<meta name="description" content="Furniture and Interior Design">
+	<meta name="keywords" content="bootstrap, bootstrap4, furniture, interior design">
+
+	<!-- Bootstrap CSS -->
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+	<link href="{% static 'css/tiny-slider.css' %}" rel="stylesheet">
+	<link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+	<title>Furni - Furniture and Interior Design</title>
+
+	<style>
+		.cart-section {
+			margin-top: 6%;
+		}
+
+		.cart-heading {
+			margin-bottom: 20px;
+			text-align: center;
+			font-size: 24px;
+			font-weight: bold;
+		}
+
+		.cart-table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		.cart-table th,
+		.cart-table td {
+			border: 1px solid #ddd;
+			padding: 15px;
+			text-align: center;
+			vertical-align: middle;
+		}
+
+		.product-image {
+			max-height: 130px;
+			width: auto;
+			display: block;
+			margin: auto;
+		}
+
+		.total-row {
+			font-weight: bold;
+		}
+
+		.cart-actions .btn {
+			margin: 5px;
+		}
+
+		.cart-item-count {
+			height: 100px;
+			background: rgb(77, 107, 107);
+			border-radius: 50%;
+			padding: 3px 6px;
+			color: white;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+
+		.btn-outline-black {
+			color: rgb(116, 57, 57);
+			border-radius: 50px;
+			width: 40px;
+		}
+
+		.quantity-container {
+			display: flex;
+			align-items: center;
+			justify-items: center;
+		}
+
+		.quantity-container button {
+			border: 1px solid #ccc;
+			border-radius: 3px;
+			padding: 5px 10px;
+			background-color: #bdbebe;
+			cursor: pointer;
+			font-size: 16px;
+		}
+
+		.quantity-container .quantity {
+			width: 50%;
+			margin: 0 5px;
+		}
+
+		.user-initial {
+			display: inline-block;
+			width: 32px;
+			height: 32px;
+			background-color: #f8f9fa;
+			color: #343a40;
+			border-radius: 50%;
+			text-align: center;
+			line-height: 32px;
+			font-weight: bold;
+			font-size: 14px;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Start Header/Navigation -->
+	<header>
+		<nav class="custom-navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
+			<div class="container">
+				<a class="navbar-brand" href="{% url 'home_view' %}">Furni<span>.</span></a>
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni"
+					aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+
+				<div class="collapse navbar-collapse" id="navbarsFurni">
+					<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'home_view' %}">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'shop_view' %}">Shop</a>
+						</li>
+						<li class="nav-item active">
+							<a class="nav-link" href="{% url 'my_orders' %}">My Order</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'about_view' %}">About us</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'contact' %}">Contact us</a>
+						</li>
+					</ul>
+
+					<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
+						{% if request.session.user_name %}
+						<li class="nav-item dropdown">
+							<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<span class="user-initial">
+									{{ request.session.user_name|slice:":1"|upper }}
+								</span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a class="dropdown-item" href="#">Settings</a></li>
+								<li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+							</ul>
+						</li>
+						{% else %}
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'login' %}" title="Login">
+								<img src="{% static 'images/user.svg' %}">
+							</a>
+						</li>
+						{% endif %}
+
+						<li class="nav-item icon">
+							<a class="nav-link" href="{% url 'cart_view' %}" title="Cart">
+								<img src="{% static 'images/cart.svg' %}" alt="Cart" class="icon">
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</header>
+	<!-- End Header/Navigation -->
+
+	<!-- Start Cart Section -->
+	<section class="container cart-section">
+		<!-- <h2 class="cart-heading">My Orders</h2> -->
+
+		<!-- <h2>My Orders (Customer)</h2> -->
+		<p>Welcome, {{ name }}!</p>
+
+		{% for seller, orders in seller_orders.items %}
+		<div class="seller-section">
+			{% for order_group in orders %}
+			<table class="table table-bordered table-striped">
+				<thead class="table-dark">
+					<tr>
+						<th>Product</th>
+						<th>Quantity</th>
+						<th>Price</th>
+						<th>Status</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for item in order_group.items %}
+					<tr>
+						<td>{{ item.product.product_name }}</td>
+						<td>{{ item.quantity }}</td>
+						<td>${{ item.product.price|floatformat:2 }}</td>
+						<td>
+							<span
+								class="badge {% if item.status == 'Pending' %}bg-warning{% elif item.status == 'Completed' %}bg-success{% elif item.status == 'Canceled' %}bg-danger{% else %}bg-info{% endif %}">
+								{{ item.status }}
+							</span>
+						</td>
+						<td>
+							{% if item.status == "delivered" %}
+								<form method="POST" action="{% url 'return_order_item' item.id %}">
+									{% csrf_token %}
+									<button type="submit" class="btn btn-primary btn-sm">Return</button>
+								</form>
+							{% elif item.status != "cancelled" %}
+								<form method="POST" action="{% url 'cancel_order_item' item.id %}">
+									{% csrf_token %}
+									<button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+								</form>
+							{% endif %}
+						</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="2"><strong>Total Price:</strong></td>
+						<td colspan="3">${{ order_group.order.total_price|floatformat:2 }}</td>
+					</tr>
+				</tfoot>
+			</table>
+			{% empty %}
+			<p>You have no orders yet.</p>
+			{% endfor %}
+		</div>
+		{% endfor %}
+	</section>
+	<!-- End Cart Section -->
+
+	<!-- Start Footer Section -->
+	<footer class="footer-section">
+		<div class="container relative">
+
+			<!-- <div class="sofa-img">
+				<img src="{% static 'images/sofa.png' %}" alt="Sofa" class="img-fluid">
+			</div>
+			
+			<div class="newsletter-section row">
+				<div class="col-lg-8">
+					<div class="subscription-form">
+						<h3 class="d-flex align-items-center">
+							<span class="me-1">
+								<img src="{% static 'images/envelope-outline.svg' %}" alt="Envelope Icon"
+									class="img-fluid">
+							</span>
+							<span>Subscribe to Newsletter</span>
+						</h3>
+						<form action="#" class="row g-3">
+							<div class="col-auto">
+								<input type="text" class="form-control" placeholder="Enter your name" aria-label="Name">
+							</div>
+							<div class="col-auto">
+								<input type="email" class="form-control" placeholder="Enter your email"
+									aria-label="Email">
+							</div>
+							<div class="col-auto">
+								<button type="submit" class="btn btn-primary">
+									<span class="fa fa-paper-plane"></span>
+								</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div> -->
+
+			<div class="footer-main row g-5 mb-5">
+				<div class="col-lg-4">
+					<div class="footer-logo-wrap mb-4">
+						<a href="#" class="footer-logo">Furni<span>.</span></a>
+					</div>
+					<p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus
+						malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.
+						Pellentesque habitant.</p>
+					<ul class="custom-social list-unstyled">
+						<li><a href="#" aria-label="Facebook"><span class="fa fa-facebook-f"></span></a></li>
+						<li><a href="#" aria-label="Twitter"><span class="fa fa-twitter"></span></a></li>
+						<li><a href="#" aria-label="Instagram"><span class="fa fa-instagram"></span></a></li>
+						<li><a href="#" aria-label="LinkedIn"><span class="fa fa-linkedin"></span></a></li>
+					</ul>
+				</div>
+
+				<div class="col-lg-8">
+					<div class="row links-wrap">
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">About Us</a></li>
+								<li><a href="#">Services</a></li>
+								<li><a href="#">Blog</a></li>
+								<li><a href="#">Contact Us</a></li>
+							</ul>
+						</div>
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Support</a></li>
+								<li><a href="#">Knowledge Base</a></li>
+								<li><a href="#">Live Chat</a></li>
+							</ul>
+						</div>
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Jobs</a></li>
+								<li><a href="#">Our Team</a></li>
+								<li><a href="#">Leadership</a></li>
+								<li><a href="#">Privacy Policy</a></li>
+							</ul>
+						</div>
+						<div class="col-6 col-sm-6 col-md-3">
+							<ul class="list-unstyled">
+								<li><a href="#">Nordic Chair</a></li>
+								<li><a href="#">Kruzo Aero</a></li>
+								<li><a href="#">Ergonomic Chair</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="footer-bottom border-top pt-4">
+				<div class="row">
+					<div class="col-lg-6">
+						<p class="mb-2 text-center text-lg-start">
+							&copy;
+							<script>document.write(new Date().getFullYear());</script> All Rights Reserved. — Designed
+							with love by
+							<a href="https://untree.co">Untree.co</a>. Distributed by
+							<a href="https://themewagon.com">ThemeWagon</a>
+							<!-- License information: https://untree.co/license/ -->
+						</p>
+					</div>
+					<div class="col-lg-6 text-center text-lg-end">
+						<ul class="list-unstyled d-inline-flex">
+							<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
+							<li><a href="#">Privacy Policy</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</footer>
+	<!-- End Footer Section -->
+
+	<!-- JS Scripts -->
+	<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+	<script src="{% static 'js/tiny-slider.js' %}"></script>
+	<script src="{% static 'js/custom.js' %}"></script>
+</body>
+
+</html>
