@@ -4,7 +4,7 @@ from .models import User, ShippingAddress, BankDetails
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "name", "email", "phone", "gender", "role"]
+        fields = ['name', 'email', 'phone', 'gender', 'role', 'password']
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
     class Meta:
